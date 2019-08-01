@@ -1,0 +1,78 @@
+html, body {height: 100%;}
+body {background-color: #0062a1;background-image: url(../images/login_bg.jpg);background-size: 100%;background-position: center;background-repeat: no-repeat;}
+
+.tw-panel-projectList {width: calc(72% - 15px);height: 100%;margin-left: 13%;}
+/******************************* 主标题 *******************************/
+h1.tw-title {position: absolute;top: 100px;left: 13%;padding-left: 70px;font-weight: bold;color: #f8aa03;-webkit-transition: left .3s ease-in-out;-o-transition: left .3s ease-in-out;transition: left .3s ease-in-out;}
+h1.tw-title:before {content: '';position: absolute;top: 50%;left: 0;display: inline-block;width: 56px;height: 56px;background-image: url(../images/logo.png);-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);}
+.tw-subTitle {position: absolute;top: 140px;right: 15%;font-size: 16px;font-weight: bold;color: #f8aa03;}
+@media screen and (min-width: 1520px) {  h1.tw-title {left: 16%;}  }
+h1.tw-title {top: 60px;-webkit-animation: tw-title-topStroke 1.2s ease-in-out;animation: tw-title-topStroke 1.2s ease-in-out;}
+.tw-subTitle {top: 100px;-webkit-animation: tw-subTitle-topStroke 1.2s ease-in-out;animation: tw-subTitle-topStroke 1.2s ease-in-out;}
+@-webkit-keyframes tw-title-topStroke {
+	from {top: 100px;}
+	to {top: 60px;}
+}
+@keyframes tw-title-topStroke {
+	from {top: 100px;}
+	to {top: 60px;}
+}
+@-webkit-keyframes tw-subTitle-topStroke {
+	from {top: 140px;}
+	to {top: 100px;}
+}
+@keyframes tw-subTitle-topStroke {
+	from {top: 140px;}
+	to {top: 100px;}
+}
+.tw-panel-wrapper {height: 100%;padding-top: 150px;}
+/******************************* 登录面板 *******************************/
+.tw-panel[tw-type='loginBox'] {position: absolute;top: 50%;left: 25%;min-width: 300px;min-height: 200px;-webkit-transform: translate(-50%, -50%);-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);}
+.tw-panel[tw-type='loginBox'] .tw-title {padding-top: 20px;padding-bottom: 10px;line-height: 32px;font-size: 24px;text-align: center;color: #ffffff;}
+.tw-panel[tw-type='loginBox'] input[type='text'], .tw-panel[tw-type='loginBox'] input[type='password'] {width: 270px;text-indent: 18px;}
+.tw-btn-login {width: 130px;border-radius: 10px;font-size: 18px;font-weight: bold;color: #ffffff;background-color: #ffbd24;}
+.tw-btn-login:active, .tw-btn-login:focus {outline: none;color: #ffffff;}
+.tw-btn-login:hover {color: #ffffff;border-color: #f5e7c6;}
+.tw-imgDisplay[tw-type='loginImg'] {position: absolute;top: 50%;left: 65%;min-width: 670px;min-height: 500px;-webkit-transform: translate(-50%, -50%);-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);-webkit-transition: min-width .3s ease-in-out, min-height .3s ease-in-out;-o-transition: min-width .3s ease-in-out, min-height .3s ease-in-out;transition: min-width .3s ease-in-out, min-height .3s ease-in-out;background-size: cover;background-position: center;background-repeat: no-repeat;}
+@media screen and (min-width: 1520px) {
+	.tw-imgDisplay[tw-type='loginImg'] {min-width: 820px;min-height: 650px;}
+}
+
+/******************************* 表单列表 *******************************/
+.tw-input-group {display: block;position: relative;margin-bottom: 15px;}
+.tw-input-group:before {position: absolute;top: 50%;left: 10px;color: #f8ab02;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);}
+.tw-button-group {margin-top: 40px;}
+.tw-button-group[tw-align='center'] {text-align: center;}
+
+/******************************* 按钮 *******************************/
+/*登出返回按钮*/
+.toolItem.return[tw-type='icon'], .toolItem.quit[tw-type='icon'] {position: absolute;top: 98px;right: calc(15% - 35px);}
+.toolItem.return[tw-type='icon'] {
+	-webkit-transform:scaleX(-1);
+	-ms-transform:scaleX(-1);
+	transform:scaleX(-1);
+}
+.toolItem.return[tw-type='icon']:hover {color: #337ab7;}
+.toolItem.quit[tw-type='icon']:hover {color: #e81123;}
+
+/******************************* 项目列表的工具条 *******************************/
+.tw-panle-function {position: relative;padding: 10px;border-bottom: 1px solid #ffffff;}
+.tw-panle-function .toolBar {position: absolute;top: 10px;right: 10px;}
+.tw-panle-function .toolItem {top: 0;display: inline-block;width: 30px;height: 30px;line-height: 28px;text-align: center;}
+.tw-queryBar {display: inline-block;}
+.tw-queryBar .tw-input {display: inline-block;}
+.tw-input + .toolItem{margin-left: 5px;}
+.tw-input[tw-type='icon']:before {position: absolute;top: 50%;left: 8px; /*color: #999999;*/color: #333333;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);}
+.tw-input[tw-type='icon'] input[type='text'], .tw-input[tw-type='icon'] input[type='password'] {text-indent: 15px;}
+.toolBar {display: inline-block;height: 30px;margin-bottom: 0;text-align: right;}
+.toolItem {display: inline-block;}
+.toolItem[tw-type='icon'] {display: inline-block;margin-bottom: 0;font-size: 24px;vertical-align: middle;color: #ffffff;cursor: pointer;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
+.toolItem[tw-type='icon']:hover {text-shadow: 0 0 4px #002d5a;text-decoration: none;color: #ffffff;}
+
+/******************************* 右键菜单 *******************************/
+.tw-modal {position: absolute;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(51, 51, 51, .08);z-index: 100;}
+.rightMenu {position: absolute;width: 240px;}
+.rightMenu .dropdown-header {font-size: 18px;color: #333333;}
+.rightMenu .dropdown-item {display: block;padding: 3px 20px;clear: both;font-weight: 400;line-height: 1.42857143;color: #333;white-space: nowrap;}
+.rightMenu .dropdown-item:hover {color: #262626;text-decoration: none;background-color: #f5f5f5;}
+.rightMenu .divider {margin-top: 5px;margin-bottom: 5px;}

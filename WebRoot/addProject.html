@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>通悟运维管理平台</title>
+	<link rel="stylesheet" href="resources/style/reset.css">
+	<link rel="stylesheet" href="resources/script/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="resources/script/scrollbar/scrollbar.css">
+	<link rel="stylesheet" href="resources/style/tongwoo.css">
+	<script src="resources/script/jquery-1.12.1.min.js"></script>
+	<script src="resources/script/scrollbar/jquery.scrollbar.js"></script>
+	
+	<iframe id = "interface_data"  name="upload" style="display:none"></iframe>
+	<script src="resources/script/bootstrap/js/bootstrap.js"></script>
+	<script src="resources/script/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+	<script src="resources/script/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+	<script src="resources/script/layer/layer.js"></script>
+	<script src="resources/script/util.js"></script>
+	<script src="resources/script/My97DatePicker/WdatePicker.js"></script>
+	<style>
+		.control-label {width: 5em;padding-top: 7px;text-align: right;vertical-align: top;color: #ffffff;}
+		.control-label + .form-control {display: inline-block;width: 270px;}
+		.tw-button-group[tw-align='center'] {text-align: center;}
+	</style>
+</head>
+<body>
+<h1 class="tw-title">通悟运维管理平台</h1>
+<span class="tw-subTitle">电话：0571-85461212</span>
+<a class="toolItem return glyphicon glyphicon-share-alt" id="dropOut" tw-type="icon" href="menuList.html" title="返回"></a>
+<div class="tw-panel-wrapper" style="padding-bottom: 15px;">
+	<div class="tw-panel-projectList scrollbar-macosx" mp-color="white">
+		<form action="" class="form-horizontal" style="width: 500px; margin: 40px auto 10px;">
+			<div class="form-group w50">
+				<label class="control-label">项目名称</label>
+				<input class="form-control input-sm" id="projectServer-projectName" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">功能模块</label>
+				<input class="form-control input-sm" id="projectServer-module" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">开发人员</label>
+				<input class="form-control input-sm" id="projectServer-developer" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">使用对象</label>
+				<input class="form-control input-sm" id="projectServer-people" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">数据库地址</label>
+				<input class="form-control input-sm" id="projectServer-database" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">访问方式</label>
+				<input class="form-control input-sm" id="projectServer-address" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">项目登录名</label>
+				<input class="form-control input-sm" id="projectServer-user" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">登录密码</label>
+				<input class="form-control input-sm" id="projectServer-password" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">修改时间</label>
+<!-- 						<input class="form-control input-sm" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '%y-%M-%d 00:00:00',maxDate:'%y-%M-%d 23:59:59'});" id="projectServer-endTime" >
+ -->						<input class="form-control input-sm" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'});" id="projectServer-endTime" >
+			</div>
+			<div class="form-group w50">
+				<label class="control-label">备注信息</label>
+				<textarea class="form-control input-sm" id="projectServer-remark" style="margin: 0px; width: 270px; height: 80px;"></textarea>
+			</div>				
+			<div class="tw-button-group" tw-align="center" style="width: 350px;">
+				<a href="javascript:void(0);" onclick="addxmnr();" class="btn btn-primary">保存</a>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+	function addxmnr(){
+		if($('#projectServer-projectName').val()==''){
+			layer.msg('项目名称必须填写！');
+			return false;
+		}
+		 if($('#projectServer-developer').val()==''){
+				layer.msg('开发人员必须填写！');
+				return false;
+			}
+		if($('#projectServer-endTime').val()==''){
+			layer.msg('项目最后修改时间必须填写！');
+			return false;
+		}
+		layer.load(1);
+		var remark=$('#projectServer-remark').val();
+		remark=encodeTextarea(remark);
+		$.ajax({
+			 type: "POST",
+			url: basePath + "xmgl/addxm",
+			data:'postData={"projectName":"'+$('#projectServer-projectName').val()+
+							'","module":"'+$('#projectServer-module').val()+
+							'","developer":"'+$('#projectServer-developer').val()+
+							'","people":"'+$('#projectServer-people').val()+
+							'","database":"'+$('#projectServer-database').val()+
+							'","address":"'+$('#projectServer-address').val()+
+							'","endTime":"'+$('#projectServer-endTime').val()+
+							'","remark":"'+remark+
+							'","user":"'+$('#projectServer-user').val()+
+							'","password":"'+$('#projectServer-password').val()+
+							'","type":"1"}',
+			timeout : 180000,
+			dataType: 'json',
+			success:function(data){
+				if(data.info=='添加成功'){
+					layer.msg('添加成功');
+					setTimeout(function(){ location.href = 'addProject.html'; }, 500);
+				}else{
+					layer.msg('添加失败');
+				}
+			},
+			error: function(){
+				layer.closeAll('loading');
+			}         
+		});
+	}
+ 	function encodeTextarea(str) {
+	    str = str.replace(/\n/g, "<br/ >");
+	    return str;
+	}
+	(function ($) {
+		$(function () {
+			$('.scrollbar-macosx').scrollbar();
+		})
+	})(jQuery);
+</script>
+</body>
+</html>

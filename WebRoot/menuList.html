@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>项目列表</title>
+	<link rel="stylesheet" href="resources/style/reset.css">
+	<link rel="stylesheet" href="resources/script/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="resources/script/scrollbar/scrollbar.css">
+	<link rel="stylesheet" href="resources/style/tongwoo.css">
+	<script src="resources/script/jquery-1.12.1.min.js"></script>
+	<script src="resources/script/scrollbar/jquery.scrollbar.js"></script>
+	
+	<iframe id = "interface_data"  name="upload" style="display:none"></iframe>
+	<script src="resources/script/bootstrap/js/bootstrap.js"></script>
+	<script src="resources/script/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+	<script src="resources/script/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+	<script src="resources/script/layer/layer.js"></script>
+	<script src="resources/script/util.js"></script>
+	<script src="resources/script/My97DatePicker/WdatePicker.js"></script>
+	<style>
+		/*项目列表*/
+		.tw-projectList {height: calc(100% - 50px);}
+		.tw-projectList ul {margin-bottom: 0;padding: 15px;}
+		.tw-projectItem {position: relative;display: inline-block;width: 300px;height: 90px;margin-right: 15px;margin-bottom: 15px;padding: 10px;box-sizing: border-box;border: 1px solid #76869d;border-radius: 4px;color: #ffffff;background-color: #003964;cursor: pointer;}
+		.tw-projectItem .tw-img {position: absolute;top: 10px;left: 10px;width: 70px;height: 70px;}
+		.tw-projectItem .tw-body {height: 100%;margin-left: 80px;}
+		.tw-projectItem .tw-title {margin-bottom: 5px;font-size: 18px;text-overflow:ellipsis; overflow:hidden; white-space:nowrap}
+		.tw-projectItem .scrollbar-macosx {display: block;margin: 0;height: 40px;}
+		.tw-projectItem .tw-introduce {font-size: 12px;text-indent: 2em;text-overflow:ellipsis;overflow:hidden; white-space:nowrap}
+	</style>
+</head>
+<body>
+<h1 class="tw-title">通悟运维管理平台</h1>
+<span class="tw-subTitle">电话：0571-85461212</span>
+<a class="toolItem quit glyphicon glyphicon-off" id="dropOut" tw-type="icon" href="login.html" title="退出"></a>
+<div class="tw-panel-wrapper">
+	<div class="tw-panel-projectList">
+		<div class="tw-panle-function">
+			<div class="tw-queryBar">
+				<div class="tw-input glyphicon glyphicon-th-large" tw-type="icon">
+					<input type="text" class="form-control input-sm" id="proManage-projectName" placeholder="项目名称" onkeydown="KeyDown()">
+				</div>
+				<a class="toolItem query glyphicon glyphicon-search" id="btnQuery" tw-type="icon" title="查询"></a>
+			</div>
+			<div class="toolBar">
+				<a class="toolItem addProject glyphicon glyphicon-plus" tw-type="icon" href="addProject.html" title="添加项目"></a>
+			</div>
+		</div>
+		<div class="tw-projectList scrollbar-macosx">
+			<ul id="projectListBar">
+				<!--<li class="tw-projectItem">
+					<img src="" class="tw-img">
+					<div class="tw-body">
+						<div class="tw-title">项目1</div>
+						<div class="scrollbar-macosx tw-introduce">项目管理是管理学的一个分支学科 ，对项目管理的定义是。</div>
+					</div>
+				</li>-->
+			</ul>
+		</div>
+	</div>
+</div>
+<script>
+function KeyDown(){
+	var event=arguments.callee.caller.arguments[0]||window.event;
+    if (event.keyCode == 13){
+        event.returnValue=false;
+        event.cancel = true;
+        $("#btnQuery").click();
+    }
+}
+	(function ($) {
+		findxmnr();
+		function findxmnr(){
+			layer.load(1);
+			$.ajax({
+				 type: "POST",
+				url: basePath + "xmgl/findxmnr",
+				data:'postData={"XMNR":"'+$("#proManage-projectName").val()+'"}',
+				timeout : 180000,
+				dataType: 'json',
+				success:function(data){
+					console.log(data)
+					layer.closeAll();
+					$('#projectListBar').html("");
+					var listCard = twProjectList('#projectListBar');
+					if(data.length>0){
+						for(var i=0; i<data.length; i++){
+							addProjectItem({"title": data[i].PRO_NAME, "introduce": data[i].PRO_DEVELOPER, "id": data[i].PRO_ID, "sumLength": data.length}, i, listCard);
+						}
+					}
+				},
+				error: function(){
+					layer.closeAll();
+				}         
+			});
+		}
+	/* 	var projectList = [
+			{title: '项目1', introduce: '项目管理是管理学的一个分支学科 ，对项目管理的定义是。'},
+			{title: '项目2', introduce: '项目管理是管理学的一个分支学科 ，对项目管理的定义是。'},
+			{title: '项目3', introduce: '项目管理是管理学的一个分支学科 ，对项目管理的定义是。'}
+		]; */
+		function twProjectList(id) {
+			var interval = 15;
+			var containerWidth = $(id).width();
+			var numberPerLine = Math.floor(containerWidth / 300);
+			var eachWidth = ((containerWidth - (numberPerLine - 1) * interval) / numberPerLine) - 2;
+// 			console.info(Math.ceil(projectList.length / numberPerLine) * numberPerLine)
+			return {width: eachWidth, numberPerLine: numberPerLine}
+		}
+		function addProjectItem(item, index, state) {
+			var projectItem = $('<li>').addClass('tw-projectItem').css({
+				width: state.width,
+				marginRight: function () {
+					if ((index + 1) % state.numberPerLine === 0) return 0
+				},
+				marginBottom: function () {
+					for (var i = state.numberPerLine; i > 0; i--) {
+						if (item.sumLength - (i) === index) return 0
+					}
+					if ((Math.floor(item.sumLength / state.numberPerLine) * state.numberPerLine) <= index) return 0
+				}
+			}).on({
+				dblclick: function (e) {
+					skipProjectInfo(item);
+				},
+				contextmenu: function (e) {
+					var x = e.clientX;
+					var y = e.clientY;
+					var modal = $('<div>').addClass('tw-modal').attr('id', 'tw-modal').on({
+						mousedown: function (e) {
+							$(this).remove();
+						}
+					});
+					var rightMenu = $('<ul>').addClass('rightMenu dropdown-menu').css({left: x, top: y}).show();
+					var title = $('<li>').addClass('dropdown-header').text(item.title).css({fontWeight: 'bold',"text-overflow":'ellipsis',overflow:'hidden', "white-space":'nowrap'});
+					var divider = $('<li>').addClass('divider').attr({role: 'separator'}).text(item.title).css({fontWeight: 'bold'});
+					var details = $('<li>').addClass('dropdown-item').text('详情').on({
+						click: function (e) {
+							skipProjectInfo(item);
+						},
+						mousedown: function (e) {
+							e.stopPropagation();
+						}
+					});
+					var edit = $('<li>').addClass('dropdown-item').text('删除').on({
+						click: function (e) {
+							proManageDel(item);
+						},
+						mousedown: function (e) {
+							e.stopPropagation();
+						}
+					});
+					rightMenu.append(title);
+					rightMenu.append(divider);
+					rightMenu.append(details);
+					rightMenu.append(edit);
+					modal.append(rightMenu);
+					$('body').append(modal);
+					return false;
+				}
+			});
+			var img = $('<img>').addClass('tw-img');
+			var body = $('<div>').addClass('tw-body');
+			var title = $('<div>').addClass('tw-title').text(item.title);
+			var introduce = $('<div>').addClass('scrollbar-macosx tw-introduce').text(item.introduce);
+			body.append(title);
+			body.append(introduce);
+			projectItem.append(img);
+			projectItem.append(body);
+			$('#projectListBar').append(projectItem)
+		}
+		function skipProjectInfo(item) {
+			var id=item.id;
+			window.location.href = "./projectDetails.html?id="+ encodeURI(encodeURI(id));				
+		}
+		function proManageDel(item) {
+			console.log(item)
+			var id=item.id;
+			var postdata = [];
+			layer.confirm('你确定要删除选中的数据', {
+				btn: ['删除', '取消'],
+				offset: '100px'
+			}, function (layerIndex) {
+				// 遍历要删除的数据
+				
+				$.ajax({
+					 type: "POST",
+					url: basePath + "xmgl/delxm",
+					data:'postData={"id":"'+id+'"}',
+					timeout : 180000,
+					dataType: 'json',
+					success:function(data){
+						if(data.info=='删除成功'){
+							layer.close(layerIndex);
+							layer.msg('删除成功');
+							$("#tw-modal").hide();
+							findxmnr();
+						}else{
+							layer.close(layerIndex);
+							layer.msg('删除失败');
+						}
+					},
+					error: function(){
+					}         
+				});
+			}, function (layerIndex) {
+				layer.close(layerIndex);
+			});
+	}
+		$(function () {
+			var listCard = twProjectList('#projectListBar');
+// 			for(var i =0;i<projectList.length;i++){
+// 				var item = projectList[i];
+// 				addProjectItem(item, i, listCard);
+// 			}
+			$('#btnQuery').on('click', function() {
+				findxmnr();
+			})
+			$('.scrollbar-macosx').scrollbar();
+			$(window).resize(function () {
+				var listCard = twProjectList('#projectListBar');
+				$('#projectListBar .tw-projectItem').each(function (index) {
+					$(this).css({
+						width: listCard.width,
+						marginRight: function () {
+							if ((index + 1) % listCard.numberPerLine === 0) return 0;
+							else return 15 + 'px'
+						},
+						
+						/* marginBottom: function () {
+							console.info('1234:', listCard)
+							for (var i = listCard.numberPerLine; i > 0; i--) {
+								if (projectList.length - (i) === index) return 0;
+							}
+							if ((Math.floor(projectList.length / listCard.numberPerLine) * listCard.numberPerLine) <= index) return 0;
+							else return 15;
+						} */
+					})
+				})
+				$('.scrollbar-macosx').scrollbar();
+			})
+		})
+	})(jQuery);
+</script>
+</body>
+</html>

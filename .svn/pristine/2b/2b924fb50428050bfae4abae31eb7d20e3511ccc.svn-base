@@ -1,0 +1,558 @@
+<!-- <!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+	<meta charset="UTF-8">
+	<title>项目管理</title>
+	<link rel="stylesheet" href="../../resources/style/reset.css">
+	<link rel="stylesheet" href="../../resources/style/iconfont.css">
+	<link rel="stylesheet" href="../../resources/script/bootstrap/css/bootstrap-theme.css">
+	<link rel="stylesheet" href="../../resources/script/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="../../resources/script/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+	<link rel="stylesheet" href="../../resources/style/main.css">
+	<style>
+		#proManageBody {
+			height: 100%;
+		}
+		#wxServer-maintenanceRecords .w50 {
+			float: left;
+			width: 50%;
+			margin-left: 0;
+			margin-right: 0;
+		}
+		.a-upload {
+			padding: 4px 10px;
+			height: 28px;
+			line-height: 20px;
+			position: relative;
+			cursor: pointer;
+			color: #888;
+			background: #fafafa;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			overflow: hidden;
+			display: inline-block;
+			*display: inline;
+			vertical-align: middle;
+			*zoom: 1
+		}
+		
+		.a-upload  input {
+			position: absolute;
+			font-size: 90px;
+			right: 0;
+			top: 0;
+			opacity: 0;
+			filter: alpha(opacity=0);
+			cursor: pointer;
+		}
+		
+		.a-upload:hover {
+			color: #444;
+			background: #eee;
+			border-color: #ccc;
+			text-decoration: none
+		}
+	</style>
+</head>
+<body id="proManageBody">
+<div class="container-fluid" id="proManage-query" >
+	<div class="form-inline query-box">
+		<div class="form-group">
+			<label for="proManage-stateTime" class="control-label">时间</label>
+			<input type="text" class="form-control input-sm" id="proManage-stateTime" placeholder="开始时间">
+			<input type="text" class="form-control input-sm" id="proManage-endTime" placeholder="结束时间">
+		</div>
+		<div class="form-group">
+			<label for="proManage-projectName" class="control-label">项目名称</label>
+			<input type="text" class="form-control input-sm" id="proManage-projectName" placeholder="项目名称">
+		</div>
+		<div class="form-group">
+			<label for="proManage-developer" class="control-label">开发人员</label>
+			<input type="text" class="form-control input-sm" id="proManage-developer" placeholder="开发人员">
+		</div>
+		<button class="btn btn-primary btn-sm" onclick="findxmnr();">查询</button>
+	</div>
+</div>
+<div class="container-fluid"  id="proManage-tabelPanel" style="padding-top: 10px;">
+	<div class="container-fluid">
+		<button class="btn btn-primary btn-sm" id="proManage-Add" data-toggle="modal" >添加</button>
+		<button class="btn btn-primary btn-sm"  id="proManage-Dc">导出</button>
+	</div>
+	 <div class="row" id="thumnail">
+  	</div>
+</div>
+Modal
+<div class="modal fade" id="proManage-modalMaintenanceReview"  role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">项目管理</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal clearfix" id="wxServer-maintenanceRecords" style="padding-right: 40px;" action="../../common/upload" target="upload" method="post" enctype="multipart/form-data">
+				<div class="row form-inline modals-box">
+					<div class="form-group col-md-6">
+						<label class="control-label">项目名称</label>
+						<input class="form-control input-sm" id="projectServer-projectName" >
+					</div>
+					<div class="form-group col-md-6">
+						<label class="control-label">功能模块</label>
+						<input class="form-control input-sm" id="projectServer-module" >
+					</div>
+					<div class="form-group col-md-6">
+						<label class="control-label">开发人员</label>
+						<input class="form-control input-sm" id="projectServer-developer" >
+					</div>
+					<div class="form-group col-md-6">
+						<label class="control-label">项目地址</label>
+						<input class="form-control input-sm" id="projectServer-address" >
+					</div>
+					<div class="form-group col-md-6">
+						<label class="control-label">项目登录名</label>
+						<input class="form-control input-sm" id="projectServer-user" >
+					</div>
+					<div class="form-group col-md-6">
+						<label class="control-label">项目登录密码</label>
+						<input class="form-control input-sm" id="projectServer-password" >
+					</div>
+					<div class="form-group col-md-6">
+						<label class="control-label">最后修改时间</label>
+						<input class="form-control input-sm" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '%y-%M-%d 00:00:00',maxDate:'%y-%M-%d 23:59:59'});" id="projectServer-endTime" >
+						<input class="form-control input-sm" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'});" id="projectServer-endTime" >
+					</div>
+					<div class="form-group col-md-6">
+						<label class="control-label">备注信息</label>
+						<input class="form-control input-sm" id="projectServer-remark" >
+					</div>				
+					<div class="form-group" id="rr_picture" style="margin-left: 0px;">
+					</div>
+				
+				</div>
+			</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="proManage-save">提交</button>
+				<button type="button" class="btn btn-default" id="proManage-cancel" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+<iframe id = "interface_data"  name="upload" style="display:none"></iframe>
+<script src="../../resources/script/jquery-1.12.1.min.js"></script>
+<script src="../../resources/script/bootstrap/js/bootstrap.js"></script>
+<script src="../../resources/script/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="../../resources/script/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script src="../../resources/script/layer/layer.js"></script>
+<script src="../../resources/script/util.js"></script>
+<script src="../../resources/checkbox.js"></script>
+<script src="../../resources/script/My97DatePicker/WdatePicker.js"></script>
+<script>
+$("#proManage-stateTime").val(setformat(new Date));
+$("#proManage-endTime").val(setformat(new Date));
+findxmnr();
+function findxmnr(){
+	layer.load(1);
+	$.ajax({
+		 type: "POST",
+		url: basePath + "xmgl/findxmnr",
+		data:'postData={"STIME":"'+$("#proManage-stateTime").val()+
+					'","ETIME":"'+$("#proManage-endTime").val()+
+					'","XMNR":"'+$("#proManage-projectName").val()+
+					'","KFRY":"'+$("#proManage-developer").val()+'"}',
+		timeout : 180000,
+		dataType: 'json',
+		success:function(data){
+			layer.closeAll();
+			console.log(data)
+			$("#thumnail").html("");
+			for(var i=0; i<data.length; i++){
+			$(  '<div class="col-sm-6 col-md-3"><div class="thumbnail" style="width:240px;height:180px;">'+
+					'<div class="caption" align="center"><h3 style="text-overflow:ellipsis;overflow:hidden;">'+data[i].PRO_NAME+'</h3><p style="text-overflow:ellipsis;overflow:hidden;">'+
+					data[i].PRO_DEVELOPER+'</p><div class="container-fluid">'+
+					'<button class="btn btn-primary btn-sm" style="position:absolute; top:130px;left:54px" id="proManage-Aud" data-toggle="modal">修改</button>&nbsp;&nbsp;&nbsp;'+
+					'<button class="btn btn-primary btn-sm btn-danger" style="position:absolute; top:130px;left:114px" id="proManage-Del" name="'+data[i].PRO_ID+'">删除</button>&nbsp;&nbsp;&nbsp;'+
+					'<button class="btn btn-primary btn-sm" style="position:absolute; top:130px;left:174px" id="proManage-Det" data-toggle="modal" >明细</button>'+
+					'</div></div></div></div>')
+					.data('database', data[i])
+					.appendTo("#thumnail");
+			}
+
+		},
+		error: function(){
+			layer.closeAll();
+		}         
+	});
+}
+	(function ($) {
+		var modalPanel='#proManage-modalMaintenanceReview';
+		var resetHeight = function () {
+			var body = $('#proManageBody');
+			var queryBox = $('#proManage-query');
+			var tabelBox = $('#proManage-tabelPanel');
+			tabelBox.css({height: (body.height() - queryBox.height() - 30) + 'px'});
+		};
+		resetHeight();
+		$(window).resize(function () {resetHeight()});
+
+		//设置弹框表单
+		function modalFormAssignment(data,type) {
+			$('#projectServer-projectName').val(data ? data.PRO_NAME : '');
+			$('#projectServer-module').val(data ? data.PRO_MODULE : '');
+			$('#projectServer-developer').val(data ? data.PRO_DEVELOPER : '');
+			$('#projectServer-address').val(data ? data.PRO_ADDRESS : '');
+			$('#projectServer-endTime').val(data ? (data.PRO_TIME_END==''?'':setformat1(new Date(data.PRO_TIME_END))) : '');
+			$('#projectServer-remark').val(data ? data.PRO_REMARK : '');
+			$('#projectServer-user').val(data ? data.PRO_USER : '');
+			$('#projectServer-password').val(data ? data.PRO_PASSWORD : '');
+			$('#projectServer-projectName').attr("disabled", type);
+			$('#projectServer-module').attr("disabled", type);
+			$('#projectServer-developer').attr("disabled", type);
+			$('#projectServer-address').attr("disabled", type);
+			$('#projectServer-endTime').attr("disabled", type);
+			$('#projectServer-remark').attr("disabled", type);
+			$('#projectServer-user').attr("disabled", type);
+			$('#projectServer-password').attr("disabled", type);
+		}
+
+		$(function () {
+			
+			$('#proManage-stateTime').datetimepicker(dateDefaultOption);
+			$('#proManage-endTime').datetimepicker(dateDefaultOption);
+			$('#proManage-Add').off('click').on('click', function () {
+				$(modalPanel).modal('show');
+				/*事件*/
+				$("#rr_picture").html('');
+				var tab = "";
+					tab += 	'<label for="wxServer-rr-puct" class="col-sm-2 control-label" style="padding-left: 17px; padding-right: 6px; width: auto;">项目文件</label>'+
+								'<div class="col-sm-10" style="padding-left: 25px; padding-right: 30px;">'+
+								'<input type="hidden" id="projectServer_id" name="PRO_ID" value=""> '+
+								'<input type="file" name="RR_PICT1" id="wxServer-rr-puct1">'+
+								'<input type="file" name="RR_PICT2" id="wxServer-rr-puct2">'+
+								'<input type="file" name="RR_PICT3" id="wxServer-rr-puct3">'+
+							'</div>';
+				$("#rr_picture").html(tab);
+				/*重置*/
+				modalFormAssignment(null, false);
+				/*事件userInfo-position*/
+				$('#proManage-save').off('click').on('click', function () {
+					if($('#projectServer-projectName').val()==''){
+						layer.msg('项目名称必须填写！');
+						return false;
+					}
+					if($('#projectServer-endTime').val()==''){
+						layer.msg('项目最后修改时间必须填写！');
+						return false;
+					}
+					layer.load(1);
+					if ($("#wxServer-rr-puct1").val() != "" || $("#wxServer-rr-puct2").val() != "" || $("#wxServer-rr-puct3").val() != ""
+						) {
+						$("#wxServer-maintenanceRecords").submit();
+						var oFrm = document.getElementById("interface_data");
+						oFrm.onload = function () {
+							if (this.readyState && this.readyState != 'complete') return;
+							else {
+								var sub_con;
+								if (document.all) {//IE
+									sub_con = document.frames["interface_data"].document;
+								} else {//Firefox
+									sub_con = document.getElementById("interface_data").contentDocument;
+								}
+								sub_con = sub_con.body.innerHTML;  //取得返回值
+								console.log(3)
+								if (sub_con.indexOf("OK") >= 0) {
+									$.ajax({
+										 type: "POST",
+										url: basePath + "xmgl/addxm",
+										data:'postData={"projectName":"'+$('#projectServer-projectName').val()+
+													'","module":"'+$('#projectServer-module').val()+
+													'","developer":"'+$('#projectServer-developer').val()+
+													'","address":"'+$('#projectServer-address').val()+
+													'","endTime":"'+$('#projectServer-endTime').val()+
+													'","remark":"'+$('#projectServer-remark').val()+
+													'","user":"'+$('#projectServer-user').val()+
+													'","password":"'+$('#projectServer-password').val()+
+													'","type":"0"}',
+										timeout : 180000,
+										dataType: 'json',
+										success:function(data){
+											if(data.info=='添加成功'){
+												$(modalPanel).modal('hide');
+												layer.msg('添加成功');
+												findxmnr();
+											}else{
+												layer.msg('添加失败');
+											}
+										},
+										error: function(){
+											layer.closeAll('loading');
+										}         
+									});
+								}else {
+									layer.closeAll('loading');
+									var dainfo = eval('(' + sub_con + ')');
+									console.log(dainfo)
+									alert(dainfo.data);
+								}
+							}
+						};
+					}else{
+						$.ajax({
+							 type: "POST",
+							url: basePath + "xmgl/addxm",
+							data:'postData={"projectName":"'+$('#projectServer-projectName').val()+
+										'","module":"'+$('#projectServer-module').val()+
+										'","developer":"'+$('#projectServer-developer').val()+
+										'","address":"'+$('#projectServer-address').val()+
+										'","endTime":"'+$('#projectServer-endTime').val()+
+										'","remark":"'+$('#projectServer-remark').val()+
+										'","user":"'+$('#projectServer-user').val()+
+										'","password":"'+$('#projectServer-password').val()+
+										'","type":"1"}',
+							timeout : 180000,
+							dataType: 'json',
+							success:function(data){
+								if(data.info=='添加成功'){
+									$(modalPanel).modal('hide');
+									layer.msg('添加成功');
+									findxmnr();
+								}else{
+									layer.msg('添加失败');
+								}
+							},
+							error: function(){
+								layer.closeAll('loading');
+							}         
+						});
+					}
+				}).show().text('保存');
+			});
+			
+			/*保存方法*/
+			$('#thumnail').off('click').on('click','#proManage-Aud', function () {
+					var item=$(this).parent().parent().parent().parent().data('database');
+					console.log(item)
+					$(modalPanel).modal('show');
+					modalFormAssignment(item,false);
+					
+					/*事件*/
+					$("#rr_picture").html('');
+					var tab = "";
+						tab += 	'<label for="wxServer-rr-puct" class="col-sm-2 control-label" style="padding-left: 17px; padding-right: 6px; width: auto;">项目文件</label>'+
+									'<div class="col-sm-10" style="padding-left: 25px; padding-right: 30px;">'+
+									'<input type="hidden" id="projectServer_id" name="PRO_ID" value=""> '+
+									'<a href="javascript:;" class="a-upload">修改文件<input type="file" name="RR_PICT1" id="wxServer-rr-puct1"></a>'+
+									'&nbsp;&nbsp;<font  face="隶书" size="2">'+item.PRO_FILENAME1+'</font><br/>'+
+									'<a href="javascript:;" class="a-upload">修改文件<input type="file" name="RR_PICT2" id="wxServer-rr-puct2"></a>'+
+									'&nbsp;&nbsp;<font  face="隶书" size="2">'+item.PRO_FILENAME2+'</font><br/>'+
+									'<a href="javascript:;" class="a-upload">修改文件<input type="file" name="RR_PICT3" id="wxServer-rr-puct3"></a>'+
+									'&nbsp;&nbsp;<font  face="隶书" size="2">'+item.PRO_FILENAME3+'</font><br/>'+
+								'</div>';
+					$("#rr_picture").html(tab);
+					$('#projectServer_id').val(item.PRO_ID);
+					$('#proManage-save').off('click').on('click', function () {
+						if($('#projectServer-projectName').val()==''){
+							layer.msg('项目名称必须填写！');
+							return false;
+						}
+						if($('#projectServer-endTime').val()==''){
+							layer.msg('项目最后修改时间必须填写！');
+							return false;
+						}
+						layer.load(1);
+						if ($("#wxServer-rr-puct1").val() != "" || $("#wxServer-rr-puct2").val() != "" || $("#wxServer-rr-puct3").val() != ""
+							) {
+							$("#wxServer-maintenanceRecords").submit();
+							var oFrm = document.getElementById("interface_data");
+							oFrm.onload = function () {
+								if (this.readyState && this.readyState != 'complete') return;
+								else {
+									var sub_con;
+									if (document.all) {//IE
+										sub_con = document.frames["interface_data"].document;
+									} else {//Firefox
+										sub_con = document.getElementById("interface_data").contentDocument;
+									}
+									sub_con = sub_con.body.innerHTML;  //取得返回值
+									console.log(3)
+									if (sub_con.indexOf("OK") >= 0) {
+										$.ajax({
+											 type: "POST",
+											url: basePath + "xmgl/editxm",
+											data:'postData={"projectName":"'+$('#projectServer-projectName').val()+
+												'","module":"'+$('#projectServer-module').val()+
+												'","developer":"'+$('#projectServer-developer').val()+
+												'","address":"'+$('#projectServer-address').val()+
+												'","endTime":"'+$('#projectServer-endTime').val()+
+												'","remark":"'+$('#projectServer-remark').val()+
+												'","user":"'+$('#projectServer-user').val()+
+												'","password":"'+$('#projectServer-password').val()+
+												'","PRO_ID":"'+item.PRO_ID+
+											'"}',
+											timeout : 180000,
+											dataType: 'json',
+											success:function(data){
+												if(data.info=='修改成功'){
+													$(modalPanel).modal('hide');
+													layer.msg('修改成功');
+													findxmnr();
+												}else{
+													layer.msg('修改失败');
+												}
+											},
+											error: function(){
+												layer.closeAll('loading');
+											}         
+										});
+									}else {
+										layer.closeAll('loading');
+										var dainfo = eval('(' + sub_con + ')');
+										console.log(dainfo)
+										alert(dainfo.data);
+									}
+								}
+							};
+						}else{
+							$.ajax({
+								 type: "POST",
+								url: basePath + "xmgl/editxm",
+								data:'postData={"projectName":"'+$('#projectServer-projectName').val()+
+									'","module":"'+$('#projectServer-module').val()+
+									'","developer":"'+$('#projectServer-developer').val()+
+									'","address":"'+$('#projectServer-address').val()+
+									'","endTime":"'+$('#projectServer-endTime').val()+
+									'","remark":"'+$('#projectServer-remark').val()+
+									'","user":"'+$('#projectServer-user').val()+
+									'","password":"'+$('#projectServer-password').val()+
+									'","PRO_ID":"'+item.PRO_ID+
+								'"}',
+								timeout : 180000,
+								dataType: 'json',
+								success:function(data){
+									if(data.info=='修改成功'){
+										$(modalPanel).modal('hide');
+										layer.msg('修改成功');
+										findxmnr();
+									}else{
+										layer.msg('修改失败');
+									}
+								},
+								error: function(){
+									layer.closeAll('loading');
+								}         
+							});
+						}
+					}).show().text('修改');
+				
+			});
+			
+			
+			
+			$('#thumnail').on('click','#proManage-Del', function () {
+					var id =$(this).attr("name");
+					console.log(id)
+					var postdata = [];
+					layer.confirm('你确定要删除选中的数据', {
+						btn: ['删除', '取消'],
+						offset: '100px'
+					}, function (layerIndex) {
+						// 遍历要删除的数据
+						
+						$.ajax({
+							 type: "POST",
+							url: basePath + "xmgl/delxm",
+							data:'postData={"id":"'+id+'"}',
+							timeout : 180000,
+							dataType: 'json',
+							success:function(data){
+								if(data.info=='删除成功'){
+									layer.close(layerIndex);
+									layer.msg('删除成功');
+									findxmnr();
+								}else{
+									layer.close(layerIndex);
+									layer.msg('删除失败');
+								}
+							},
+							error: function(){
+							}         
+						});
+					}, function (layerIndex) {
+						layer.close(layerIndex);
+					});
+			});
+			
+			$('#proManage-Dc').off('click').on('click', function(){
+				var postData = {
+						"STIME":$("#proManage-stateTime").val(),
+						"ETIME":$("#proManage-endTime").val(),
+						"XMNR":$("#proManage-projectName").val(),
+						"KFRY":$("#proManage-developer").val(),
+					};
+					url = basePath + "xmgl/xmglexcle?postData="
+						+ encodeURI(encodeURI(JSON.stringify(postData))), window.open(url)
+			});
+			
+			$('#thumnail').off('click','#proManage-Det').on('click','#proManage-Det', function () {
+				$(modalPanel).modal('show');
+				$('#rr_picture').html('');
+				var item=$(this).parent().parent().parent().parent().data('database');
+				console.log(item)
+				/*赋值*/
+				modalFormAssignment(item,true);
+				
+				var tab = "";
+				if(item.PRO_FILE1!=""){
+					tab += 	'<div class="form-group" style="margin-left: 0px;">'+
+								'<label  class="col-sm-2 control-label" style="padding-left: 17px; padding-right: 6px; width: auto;">下载文件</label>'+
+								'<div class="col-sm-10 " style="padding-left: 25px; padding-right: 30px;"> '+
+								'<button class="btn btn-primary btn-sm " type="button" name="'+item.PRO_ID+'" id="proManage-Download">下载</button>'+
+								'&nbsp;&nbsp;&nbsp;<font  face="隶书" size="2">'+item.PRO_FILENAME1+'</font>'+
+								'</div>'+
+							'</div><br/>';
+				}
+				if(item.PRO_FILE2!=""){
+					tab += 	'<div class="form-group" style="margin-left: 0px;">'+
+								'<label  class="col-sm-2 control-label" style="padding-left: 17px; padding-right: 6px; width: auto;">下载文件</label>'+
+								'<div class="col-sm-10 " style="padding-left: 25px; padding-right: 30px;"> '+
+								'<button class="btn btn-primary btn-sm " type="button" name="'+item.PRO_ID+'" id="proManage-Download2">下载</button>'+
+								'&nbsp;&nbsp;&nbsp;<font  face="隶书" size="2">'+item.PRO_FILENAME2+'</font>'+
+								'</div>'+
+							'</div><br/>';
+				}
+				if(item.PRO_FILE3!=""){
+					tab += 	'<div class="form-group" style="margin-left: 0px;">'+
+								'<label  class="col-sm-2 control-label" style="padding-left: 17px; padding-right: 6px; width: auto;">下载文件</label>'+
+								'<div class="col-sm-10 " style="padding-left: 25px; padding-right: 30px;"> '+
+								'<button class="btn btn-primary btn-sm " type="button" name="'+item.PRO_ID+'" id="proManage-Download3">下载</button>'+
+								'&nbsp;&nbsp;&nbsp;<font  face="隶书" size="2">'+item.PRO_FILENAME3+'</font>'+
+								'</div>'+
+							'</div>';
+				}
+				$("#rr_picture").html(tab);
+				$("#proManage-save").hide();
+				$('#proManage-Download').off('click').on('click', function () {
+					var id =$(this).attr("name");
+					var type=1;
+					console.log("id="+id)
+						url = basePath + "common/download?id="+id+"&type="+type, window.open(url)	
+					});
+				$('#proManage-Download2').off('click').on('click', function () {
+					var id =$(this).attr("name");
+					var type=2;
+					console.log("id="+id)
+						url = basePath + "common/download?id="+id+"&type="+type, window.open(url)	
+					});
+				$('#proManage-Download3').off('click').on('click', function () {
+					var id =$(this).attr("name");
+					var type=3;
+					console.log("id="+id)
+						url = basePath + "common/download?id="+id+"&type="+type, window.open(url)	
+					});
+		});
+					
+		});	
+	})(jQuery);
+</script>
+</body>
+</html> -->
